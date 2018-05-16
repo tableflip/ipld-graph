@@ -1,3 +1,7 @@
+# Parcel gubbins
+.cache/
+dist/
+
 # Logs
 logs
 *.log

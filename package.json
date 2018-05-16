@@ -1,0 +1,22 @@
+{
+  "name": "ipld-graph",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^1.8.1",
+    "standard": "^11.0.1"
+  },
+  "dependencies": {
+    "cytoscape": "^3.2.12",
+    "pretty-hash": "^1.0.1",
+    "tachyons": "^4.9.1"
+  },
+  "browserslist": ">10%"
+}

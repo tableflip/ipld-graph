@@ -1,0 +1,8 @@
+@import "tachyons";
+
+#ipld-graph {
+  width: 50%;
+  height: 500px;
+  display: block;
+  border: 1px solid #eee;
+}
