@@ -1,6 +1,9 @@
 const cytoscape = require('cytoscape')
+const dagre = require('cytoscape-dagre')
 const qs = require('querystring')
 const prettyHash = require('pretty-hash')
+
+cytoscape.use(dagre)
 
 const {search} = window.location
 const params = search ? qs.parse(search.substring(1)) : {}
@@ -8,17 +11,17 @@ const {path} = params
 
 renderTree(window.ipfs, path)
 
-async function renderTree (ipfs, path) {
-  const links = await ipfs.object.links(path)
+function addIpfsLinks (parent, links, cy) {
+  if (!links.length) return
 
-  const cytoscapeEdges = links.map(link => {
+  const edges = links.map(link => {
     const obj = link.toJSON()
     const {multihash} = obj
     return {
       group: 'edges',
       data: {
         prettyHash: prettyHash(multihash),
-        source: path,
+        source: parent,
         target: multihash
       }
     }
@@ -38,6 +41,10 @@ async function renderTree (ipfs, path) {
     }
   })
 
+  cy.add([...edges, ...nodes])
+}
+
+async function renderTree (ipfs, path) {
   const cy = cytoscape({
     container: document.getElementById('ipld-graph'), // container to render in
 
@@ -48,9 +55,7 @@ async function renderTree (ipfs, path) {
           id: path,
           prettyHash: prettyHash(path)
         }
-      },
-      ...nodes,
-      ...cytoscapeEdges
+      }
     ],
 
     style: [ // the stylesheet for the graph
@@ -76,8 +81,19 @@ async function renderTree (ipfs, path) {
     ],
 
     layout: {
-      name: 'breadthfirst'
+      name: 'dagre'
     }
+  })
+
+  const links = await ipfs.object.links(path)
+  addIpfsLinks(path, links, cy)
+  cy.layout({ name: 'dagre' }).run()
+
+  cy.on('tap', async (e) => {
+    const data = e.target.data()
+    const links = await ipfs.object.links(data.id)
+    addIpfsLinks(data.id, links, cy)
+    cy.layout({ name: 'dagre', animate: true, fit: false }).run()
   })
 
   return cy

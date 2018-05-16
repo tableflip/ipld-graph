@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "cytoscape": "^3.2.12",
+    "cytoscape-dagre": "^2.2.1",
     "pretty-hash": "^1.0.1",
     "tachyons": "^4.9.1"
   },
